@@ -22,8 +22,8 @@ def store_credentials(username, password, aws_accesskey=None, aws_secretkey=None
     except Exception as ex:
         print(f"An error occurred while writing credentials to file: {ex}")
 
-
-def fetch_credentials(filename="password.txt"):
+filename ="C:\\Users\\tochi\OneDrive\\Documents\\CS_Masters\\Cloud_AO\\assignment1\\Solution\\src_code\\password.txt"
+def fetch_credentials(filename= filename):
     "retrieves user credential from password.txt"
     try:
         with open(filename, "r") as file:
@@ -48,7 +48,7 @@ def authenticate_user(username, password):
             stored_username, stored_password, *access_keys = parts
             if (username == stored_username) and (password == stored_password):
                 access_key = access_keys[0] if access_keys else None  # Assign access_key
-                secret_key = access_keys[1:] if len(access_keys) > 1 else None  # Assign secret_key
+                secret_key = access_keys[1] if len(access_keys) > 1 else None  # Assign secret_key
                 valid = True 
                 break
         return valid, access_key, secret_key
