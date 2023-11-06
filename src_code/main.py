@@ -3,7 +3,7 @@ from resources import Resource
 from ec2_instance import manage_ec2
 import boto3
 
-
+print("hello")
 def connect_to_aws():
     access_key, secret_key = user_access()
     print(access_key, secret_key)
