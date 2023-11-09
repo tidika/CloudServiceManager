@@ -78,11 +78,11 @@ def login():
                 break
             
             else:
-                print("Authentication failed. Please check your credentials.")
-                command = input("Do you want to (E)xit or (C)ontinue? ").lower()
+                print("Authentication failed. Please check your credentials.") 
+                command = input("Would you like to (C)ontinue or (E)xit back to the Management Men? ").lower() 
                 if command == "e":
                     break
-    return access_key, secret_key                
+    return valid, access_key, secret_key                
 
 def user_access():
     "manages user login and registration"
@@ -90,7 +90,7 @@ def user_access():
         user_status = input("Are you a returning user? (yes/no): ").lower()
 
         if user_status == "yes":
-            access_key, secret_key = login()
+            valid, access_key, secret_key = login()
             break
 
         elif user_status == "no":
@@ -98,17 +98,17 @@ def user_access():
             print("Let's start the registration process.")
             register_new_user()
             print("Registration successful. Please proceed to log in.")
-            login()
+            valid, access_key, secret_key = login()
             break
 
-        elif user_status == "exit":
+        elif user_status == "exit": 
             print("Thanks for using the system. ")
 
         else:
             print(
                 "Wrong input detected. Please enter 'yes' or 'no' or type 'exit' to quit"
             )
-    return access_key, secret_key
+    return valid, access_key, secret_key
 
 if __name__ == "__main__":
     access_key, secret_key = user_access()
