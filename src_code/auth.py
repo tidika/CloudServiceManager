@@ -23,7 +23,10 @@ def store_credentials(username, password, aws_accesskey=None, aws_secretkey=None
         print(f"An error occurred while writing credentials to file: {ex}")
 
 
-def fetch_credentials(filename="password.txt"):
+filename = "C:\\Users\\tochi\OneDrive\\Documents\\CS_Masters\\Cloud_AO\\assignment1\\Solution\\src_code\\password.txt"
+
+
+def fetch_credentials(filename=filename):
     "retrieves user credential from password.txt"
     try:
         with open(filename, "r") as file:
@@ -47,9 +50,13 @@ def authenticate_user(username, password):
             parts = line.strip().split()
             stored_username, stored_password, *access_keys = parts
             if (username == stored_username) and (password == stored_password):
-                access_key = access_keys[0] if access_keys else None  # Assign access_key
-                secret_key = access_keys[1:] if len(access_keys) > 1 else None  # Assign secret_key
-                valid = True 
+                access_key = (
+                    access_keys[0] if access_keys else None
+                )  # Assign access_key
+                secret_key = (
+                    access_keys[1] if len(access_keys) > 1 else None
+                )  # Assign secret_key
+                valid = True
                 break
         return valid, access_key, secret_key
 
@@ -76,13 +83,16 @@ def login():
             if valid:
                 print("Authentication successful. You are logged in!")
                 break
-            
+
             else:
                 print("Authentication failed. Please check your credentials.")
-                command = input("Do you want to (E)xit or (C)ontinue? ").lower()
+                command = input(
+                    "Would you like to (C)ontinue or (E)xit back to the Management Men? "
+                ).lower()
                 if command == "e":
                     break
-    return access_key, secret_key                
+    return valid, access_key, secret_key
+
 
 def user_access():
     "manages user login and registration"
@@ -90,7 +100,7 @@ def user_access():
         user_status = input("Are you a returning user? (yes/no): ").lower()
 
         if user_status == "yes":
-            access_key, secret_key = login()
+            valid, access_key, secret_key = login()
             break
 
         elif user_status == "no":
@@ -98,7 +108,7 @@ def user_access():
             print("Let's start the registration process.")
             register_new_user()
             print("Registration successful. Please proceed to log in.")
-            login()
+            valid, access_key, secret_key = login()
             break
 
         elif user_status == "exit":
@@ -108,17 +118,9 @@ def user_access():
             print(
                 "Wrong input detected. Please enter 'yes' or 'no' or type 'exit' to quit"
             )
-    return access_key, secret_key
+    return valid, access_key, secret_key
+
 
 if __name__ == "__main__":
     access_key, secret_key = user_access()
-#    valid,  access, secret = authenticate_user("Tochi", "idika2021")
-#    print(valid)
-#    print(access)
-#    print(secret)
 
-
-#try to use the wrong password and see what error message you get. and see if there is a way to fix 
-#Tommorrow run the authenticte_user code directly and see if that works, then try to fix the issue above
-#lactivate your git and start pushing this work github to have a copy there. 
-#work on finishing your main.py file so you can start developing each module. 
