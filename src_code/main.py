@@ -3,15 +3,13 @@ from ec2_controller import manage_ec2
 
 
 def main_menu():
-    "Main function for running the entire logic. "
+    "Main function for running the entire logic."
     while True:
-       
         print("\nAWS Management Menu")
         print("1. Connect to AWS")
         print("2. Exit")
 
         choice = input("Enter your choice: ")
-        
         if choice == "1":
             valid, access_key, secret_key = user_access()
 
@@ -29,7 +27,7 @@ def main_menu():
                 elif service_choice == "2":
                     pass
                 elif service_choice == "3":
-                    break  
+                    break
                 else:
                     print("Invalid choice. Please select a valid option.")
         elif choice == "2":
@@ -38,7 +36,6 @@ def main_menu():
         else:
             print("Invalid choice. Please select a valid option.")
 
+
 if __name__ == "__main__":
     main_menu()
-
-
