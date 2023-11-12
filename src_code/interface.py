@@ -2,7 +2,7 @@ import boto3
 
 
 class Client:
-    def __init__(self, access_key, secret_key, region="eu-west-1"):
+    def __init__(self, access_key, secret_key, region):
         self.access_key = access_key
         self.secret_key = secret_key
         self.region = region
@@ -18,7 +18,7 @@ class Client:
 
 
 class Resource:
-    def __init__(self, access_key, secret_key, region="eu-west-1"):
+    def __init__(self, access_key, secret_key, region):
         self.access_key = access_key
         self.secret_key = secret_key
         self.region = region

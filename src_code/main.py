@@ -1,5 +1,6 @@
 from auth import user_access
 from ec2_controller import manage_ec2
+from ebs_controller import manage_ebs
 
 
 def main_menu():
@@ -12,20 +13,24 @@ def main_menu():
         choice = input("Enter your choice: ")
         if choice == "1":
             valid, access_key, secret_key = user_access()
+            region_choice = input("Enter the region to use (default is eu-west-1): ")
+            if not region_choice.strip():
+                region_choice = "eu-west-1"
+            print(f"Selected region: {region_choice}")
 
             while True:
                 if not valid:
                     break
                 print("\nSelect a Menu")
                 print("1. Manage EC2")
-                print("2. Manage S3")
+                print("2. Manage EBS")
                 print("3. Back to Main Menu")
 
                 service_choice = input("Enter your choice: ")
                 if service_choice == "1":
-                    manage_ec2(access_key, secret_key)
+                    manage_ec2(access_key, secret_key, region_choice)
                 elif service_choice == "2":
-                    pass
+                    manage_ebs(access_key, secret_key, region_choice)
                 elif service_choice == "3":
                     break
                 else:
