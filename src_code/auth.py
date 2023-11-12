@@ -1,3 +1,5 @@
+import os
+
 def get_credentials():
     "gets username and password data from user"
 
@@ -22,11 +24,9 @@ def store_credentials(username, password, aws_accesskey=None, aws_secretkey=None
     except Exception as ex:
         print(f"An error occurred while writing credentials to file: {ex}")
 
-
-filename = "C:\\Users\\tochi\OneDrive\\Documents\\CS_Masters\\Cloud_AO\\assignment1\\Solution\\src_code\\password.txt"
-
-
-def fetch_credentials(filename=filename):
+file_name = "password.txt"
+full_path = os.path.join(os.path.dirname(__file__), file_name)
+def fetch_credentials(filename=full_path):
     "retrieves user credential from password.txt"
     try:
         with open(filename, "r") as file:
