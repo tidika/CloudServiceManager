@@ -10,7 +10,6 @@ class EC2Actions:
         self.secret_key = secret_key
         self.region = region
         self.ec2_client = Client(access_key, secret_key, region).ec2_client()
-        self.instance_ids = {"1": "i-03aeb95ee2eb5d041", "2": "i-06fc919515f7a6260"}
 
     def list_instances(self):
         # TODO format it to look like what the lecturer has on his book

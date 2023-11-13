@@ -15,6 +15,33 @@ class Client:
             region_name=self.region,
         )
         return ec2
+    
+    def s3_client(self):
+        s3 = boto3.client(
+            "s3",
+            aws_access_key_id=self.access_key,
+            aws_secret_access_key=self.secret_key,
+            region_name=self.region,
+        )
+        return s3
+    
+    def cloudwatch_client(self):
+        cloudwatch = boto3.client(
+            "cloudwatch",
+            aws_access_key_id=self.access_key,
+            aws_secret_access_key=self.secret_key,
+            region_name=self.region,
+        )
+        return cloudwatch
+    
+    def rds_client(self):
+        cloudwatch = boto3.client(
+            "rds",
+            aws_access_key_id=self.access_key,
+            aws_secret_access_key=self.secret_key,
+            region_name=self.region,
+        )
+        return rds
 
 
 class Resource:

@@ -197,19 +197,26 @@ class EBSActions:
             return set()
 
     def choose_unique_device_name(self, instance_id):
-        existing_device_names = self.get_existing_device_names(instance_id)
-        available_letters = set(
-            string.ascii_lowercase[5:15]
-        )  # [f-p] which is aws range for device storage being mounted.
+        #TODO test this new functionality of being ablbe to attach a root volume. 
+        choice = input("Do you want to attach a root volume? (yes/no): ")
 
-        for letter in available_letters:
-            potential_device_name = f"/dev/sd{letter}"
+        if choice == "no":
+            existing_device_names = self.get_existing_device_names(instance_id)
+            available_letters = set(
+                string.ascii_lowercase[5:15]
+            )  # [f-p] which is aws range for device storage being mounted.
 
-            if potential_device_name not in existing_device_names:
-                return potential_device_name
+            for letter in available_letters:
+                potential_device_name = f"/dev/sd{letter}"
 
-        print("Error: No available device names.")
-        return None
+                if potential_device_name not in existing_device_names:
+                    return potential_device_name
+
+            print("Error: No available device names.")
+            return None
+        else: 
+            potential_device_name = "dev/xvda"
+            return potential_device_name
 
     def detach_vol_utils(self, instance_id, volume_id_choice):
         try:
@@ -286,9 +293,6 @@ class EBSActions:
                 print("Invalid choice... please select a valid Volume ID")
 
     def modify_volume(self):
-        print(
-            "Please Note that Size of the Volume can only be increased, not decreased"
-        )
         print(
             "To decrease a volume size,take a snapshot and then create a volume out of the snapshot"
         )
@@ -469,6 +473,8 @@ def manage_ebs(access_key, secret_key, region):
             action.take_snapshots()
         elif choice == "8":
             action.create_vol_from_snapshot()
+        elif choice == "9":
+            break
         else:
             print("Invalid choice. Please select a valid option.")
 
