@@ -2,6 +2,8 @@ import boto3
 
 
 class Client:
+    "it creates client for AWS services"
+    
     def __init__(self, access_key, secret_key, region):
         self.access_key = access_key
         self.secret_key = secret_key
