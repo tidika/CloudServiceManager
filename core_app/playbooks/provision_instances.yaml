@@ -1,0 +1,40 @@
+
+- name: Provision EC2 Instances
+  hosts: localhost
+  gather_facts: False
+
+  vars:
+    instance_type: t2.micro
+    ami_id: ami-08031206a0ff5a6ac
+    key_name: ansible
+    security_group: launch-wizard-6
+    vpc_subnet_id: subnet-0ffc0869c42dfcce9
+    group_name: "{{ group_name | default('ec2_instance') }}"
+
+  tasks:
+    - name: Launch EC2 instances
+      ec2:
+        region: eu-west-1
+        count: "{{ count | default(1) }}"
+        instance_type: "{{ instance_type }}"
+        image: "{{ ami_id }}"
+        key_name: "{{ key_name }}"
+        group: "{{ security_group }}"
+        vpc_subnet_id: "{{ vpc_subnet_id }}"
+        assign_public_ip: yes
+        wait: yes
+        instance_tags:
+          Name: "Ansible Provisioned Instance"
+      register: ec2_instances
+
+    - name: Add EC2 instances' public IPs to /etc/ansible/hosts under specified group
+      become: true
+      blockinfile:
+        path: /etc/ansible/hosts
+        block: |
+          [{{ group_name }}]
+          {% for item in ec2_instances.instances %}
+          {{ item.public_ip }}
+          {% endfor %}
+        marker: "# {mark} ANSIBLE MANAGED BLOCK for EC2 instances"
+      when: ec2_instances.instances is defined

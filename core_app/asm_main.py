@@ -30,7 +30,6 @@ def main_menu():
                 print("3. Manage S3")
                 print("4. Manage Cloudwatch")
                 print("5. Manage RDS")
-                # print("6. Manage Ansible hosts")
                 print("6. Back to Main Menu")
 
                 service_choice = input("Enter your choice: ")
@@ -58,4 +57,3 @@ def main_menu():
 if __name__ == "__main__":
     main_menu()
 
-    #TODO consider making controller a folder and placing all those controller files inside there. 

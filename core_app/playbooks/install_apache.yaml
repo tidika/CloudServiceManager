@@ -1,0 +1,25 @@
+---
+- name: Install and Run Apache on selected group of instances
+  hosts: localhost
+  gather_facts: False
+  vars:
+    apache_group: "{{ lookup('file', '/etc/ansible/hosts') | regex_findall('\\[(.*?)\\]') | map('regex_replace', '\\[|\\]', '') | list }}"
+  tasks:
+    - name: Display available groups
+      debug:
+        msg: "Available groups: {{ apache_group }}"
+
+    - name: Ask user to select a group
+      pause:
+        prompt: "Enter the group name to install Apache on: "
+      register: user_input
+
+    - name: Install Apache on the selected group
+      become: true
+      block:
+        - name: Install Apache2
+          apt:
+            name: apache2
+            state: present
+          delegate_to: "{{ item }}"
+          with_items: "{{ groups[user_input.user_input] }}"

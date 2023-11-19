@@ -56,7 +56,6 @@ class S3Actions:
         print(filename_choice)
         try:
             project_root = self.project_root()
-            print(project_root)
             local_file_path = os.path.join(
                 project_root, "data", "uploads", filename_choice
             )
@@ -85,7 +84,7 @@ class S3Actions:
             response = self.s3_client.list_objects_v2(
                 Bucket=bucket_name_choice,
                 Prefix=object_choice,
-                MaxKeys=1,  # MaxKeys=1 means we're only checking if there's something
+                MaxKeys=1,  
             )
 
             if "Contents" in response:

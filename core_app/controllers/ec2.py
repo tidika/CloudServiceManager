@@ -72,15 +72,15 @@ class EC2Actions:
 
     def launch_instance(self):
         "Launches an EC@ instance based on the ami type selected by the user."
-        launch_details = {"1": "ami-0e309a5f3a6dd97ea", "2": "ami-04c320a393da4b1ba"}
+        launch_details = {"1": "ami-08031206a0ff5a6ac", "2": "ami-04da009783c8762ed"}
 
         while True:
             print(
                 "Please note that this system only launches free tier AMIs in eu-west-1 region"
             )
             print("\nSelect AMI Type")
-            print("1. Linux")
-            print("2. Windows")
+            print("1. Linux (ubuntu)")
+            print("2. Windows (2019 base)")
             print("3. Back to EC2 action Menu")
             choice = input("Enter your choice:").lower()
 
