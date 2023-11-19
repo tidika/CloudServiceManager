@@ -35,7 +35,7 @@ class Client:
         return cloudwatch
     
     def rds_client(self):
-        cloudwatch = boto3.client(
+        rds = boto3.client(
             "rds",
             aws_access_key_id=self.access_key,
             aws_secret_access_key=self.secret_key,

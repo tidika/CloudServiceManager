@@ -12,7 +12,7 @@ class EC2Actions:
         self.ec2_client = Client(access_key, secret_key, region).ec2_client()
 
     def list_instances(self):
-        # TODO format it to look like what the lecturer has on his book
+        "Enumerates instances either within the user's AWS account or the logged-in region."
         print("\nSelect a list action")
         print("1. List all instances within the aws account")
         print(f"2. List instances in the {self.region} region")
@@ -31,10 +31,11 @@ class EC2Actions:
                 print("Invalid choice. Please select a valid option.")
 
     def start_instance(self):
-        "starts a specified instance"
+        "Starts up an EC2 instance specified by the user"
         while True:
             print("\nSelect an Instance ID")
             running_instance, stopped_instance = self.list_instanceId()
+            print("")
             choice = input(
                 "Enter your instance ID choice (or type 'exit' to go back to ec2 action menu): "
             )
@@ -50,10 +51,11 @@ class EC2Actions:
                 print("Invalid choice. Please select a valid option.")
 
     def stop_instance(self):
-        "Stops a specified instance"
+        "Stops an EC2 instance specified by the user"
         while True:
             print("\nSelect an Instance ID")
             running_instance, stopped_instance = self.list_instanceId()
+            print("")
             choice = input(
                 "Enter your instance ID choice (or type 'exit' to go back to ec2 action menu): "
             )
@@ -69,12 +71,12 @@ class EC2Actions:
                 print("Invalid choice. Please select a valid option.")
 
     def launch_instance(self):
-        "Launches a specified instance"
+        "Launches an EC@ instance based on the ami type selected by the user."
         launch_details = {"1": "ami-0e309a5f3a6dd97ea", "2": "ami-04c320a393da4b1ba"}
 
         while True:
             print(
-                "Please note that this system only launches free tier AMIs within eu-west-1"
+                "Please note that this system only launches free tier AMIs in eu-west-1 region"
             )
             print("\nSelect AMI Type")
             print("1. Linux")
@@ -108,6 +110,7 @@ class EC2Actions:
         while True:
             ("\nSelect an Instance ID")
             running_instance, stopped_instance = self.list_instanceId()
+            print("")
             choice = input(
                 "Enter your instance ID choice (or type 'exit' to go back to ec2 action menu): "
             )
@@ -121,7 +124,7 @@ class EC2Actions:
                 print("Invalid choice. Please select a valid option.")
 
     def list_all_instances(self):
-        "Lists all instances within the aws account along with their details"
+        "A helper method that lists all instances within the aws account along with their details"
 
         print("\nFetching details about the instances in your account. Please wait....")
         region_running_instances = {}
@@ -152,7 +155,7 @@ class EC2Actions:
         )
         for region, instances in region_running_instances.items():
             if instances:
-                print(f"Region: {region}")
+                # print(f"Region: {region}")
                 for instance in instances:
                     formatted_info = ", ".join(
                         [
@@ -167,13 +170,20 @@ class EC2Actions:
         )
         for region, instances in region_other_instances.items():
             if instances:
-                print(f"Region: {region}")
+                # print(f"Region: {region}")
                 for instance in instances:
-                    print(instances)
+                    formatted_info = ", ".join(
+                        [
+                            f"{index}: {key}: {value}"
+                            for index, (key, value) in enumerate(instance.items())
+                        ]
+                    )
+                    print(formatted_info)
+
         return None
 
     def list_region_instances(self):
-        "Lists all instances within the region along with their details"
+        "A helper method that lists all instances within the region along with their details"
 
         print(
             f"\nFetching details about the instances in your region {self.region}. Please wait...."
@@ -186,7 +196,13 @@ class EC2Actions:
                 "\n*****************************Running Instances*********************************"
             )
             for instance in running_instances:
-                print(instance)
+                formatted_info = ", ".join(
+                    [
+                        f"{index}: {key}: {value}"
+                        for index, (key, value) in enumerate(instance.items())
+                    ]
+                )
+                print(formatted_info)
 
         elif other_instances:
             print(
@@ -205,6 +221,7 @@ class EC2Actions:
         return None
 
     def list_instanceId(self):
+        "A helper method that lists running and stopped instances as a list"
         running_instances = []
         stopped_instances = []
         try:
@@ -226,6 +243,7 @@ class EC2Actions:
             print(f"Error: {ex}")
 
     def start_instance_util(self, instance_id):
+        "A helper method for starting an EC2 instance"
         try:
             self.ec2_client.start_instances(InstanceIds=[instance_id])
             print(
@@ -238,6 +256,7 @@ class EC2Actions:
             print("Error: Unable to start the instance:", ex)
 
     def stop_instance_util(self, instance_id):
+        "A helper method for stopping an EC2 instance"
         try:
             self.ec2_client.stop_instances(InstanceIds=[instance_id])
             print(
@@ -250,6 +269,7 @@ class EC2Actions:
             print("Error: Unable to stop the instance:", ex)
 
     def terminate_instance_util(self, instance_id):
+        "A helper function for terminating EC2 instance"
         try:
             self.ec2_client.terminate_instances(InstanceIds=[instance_id])
             print(f"The instance {instance_id} has been terminated.")
@@ -258,6 +278,7 @@ class EC2Actions:
 
 
 def manage_ec2(access_key, secret_key, region):
+    "Provides an interactive menu for managing EC2 instances"
     action = EC2Actions(access_key, secret_key, region)
     while True:
         print("\nSelect an EC2 action")
@@ -283,7 +304,3 @@ def manage_ec2(access_key, secret_key, region):
             break
         else:
             print("Invalid choice. Please select a valid option.")
-
-
-# if __name__ == "__main__":
-#     manage_ec2()

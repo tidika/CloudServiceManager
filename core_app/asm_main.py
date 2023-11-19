@@ -1,9 +1,9 @@
-from auth import user_access
-from ec2_controller import manage_ec2
-from ebs_controller import manage_ebs
-from s3_controller import manage_s3
-from cloudwatch_controller import manage_cloudwatch
-from rds_controller import manage_rds
+from  auth import user_access
+from controllers.ec2 import manage_ec2
+from controllers.ebs import manage_ebs
+from controllers.s3 import manage_s3
+from controllers.cloudwatch import manage_cloudwatch
+from controllers.rds import manage_rds
 
 
 def main_menu():
@@ -30,6 +30,7 @@ def main_menu():
                 print("3. Manage S3")
                 print("4. Manage Cloudwatch")
                 print("5. Manage RDS")
+                # print("6. Manage Ansible hosts")
                 print("6. Back to Main Menu")
 
                 service_choice = input("Enter your choice: ")
@@ -56,3 +57,5 @@ def main_menu():
 
 if __name__ == "__main__":
     main_menu()
+
+    #TODO consider making controller a folder and placing all those controller files inside there. 

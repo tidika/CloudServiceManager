@@ -1,7 +1,7 @@
 import string
 
 from interface import Client
-from ec2_controller import EC2Actions
+from controllers.ec2 import EC2Actions
 from utils import confirm_choices
 
 
@@ -14,10 +14,10 @@ class EBSActions:
         self.ec2_actions = EC2Actions(access_key, secret_key, region)
 
     def list_volume(self):
-        "Lists all the ebs volume within an aws account"
+        "Lists all the EBS volume within the user's AWS account"
 
         print(
-            "\nFetching details about the ebs Volumes in your account. Please wait...."
+            "\nFetching details about the EBS volumes in your account. Please wait...."
         )
         volume_list = {}
         regions = [
@@ -45,11 +45,17 @@ class EBSActions:
                     )
                     volume_list[region] = region_volume_list
         for region, volumes in volume_list.items():
-            print(f"\nRegion: {region}")
             for volume in volumes:
-                print(volume)
+                formatted_info = ", ".join(
+                    [
+                        f"{index}: {key}: {value}"
+                        for index, (key, value) in enumerate(volume.items())
+                    ]
+                )
+                print(formatted_info)
 
     def create_volume(self):
+        "Creates an EBS volume based on the parameters provided by the user"
         while True:
             while True:
                 az_choice = input("Enter the AZ: ").lower()
@@ -92,6 +98,7 @@ class EBSActions:
                         print("Invalid choice. Please select a valid option.")
 
     def attach_volume(self):
+        "Attaches an existing volume to an EC2 instance specified by the user"
         instance_id = input("Enter the EC2 Instance ID: ").lower()
         device = self.choose_unique_device_name(instance_id)
 
@@ -139,6 +146,7 @@ class EBSActions:
                 return None
 
     def list_unused_volumes_by_az(self, az):
+        "A helper function for getting the unused volume by AZ"
         try:
             response = self.ec2_client.describe_volumes(
                 Filters=[{"Name": "availability-zone", "Values": [az]}]
@@ -169,6 +177,7 @@ class EBSActions:
             print(f"Error: {ex}")
 
     def attach_volume_utils(self, device, instance_id, volume_id):
+        "A helper function for attaching a volume to an EC2 instance"
         try:
             self.ec2_client.attach_volume(
                 Device=device, InstanceId=instance_id, VolumeId=volume_id
@@ -180,6 +189,7 @@ class EBSActions:
             print(f"Error: Unable to attach the volume due to - {ex}")
 
     def get_existing_device_names(self, instance_id):
+        "Fetches the existing volume device name. This ensures that there are no repeat of device name when attaching a volume to an instance."
         try:
             response = self.ec2_client.describe_instances(InstanceIds=[instance_id])
             existing_device_names = set()
@@ -197,7 +207,7 @@ class EBSActions:
             return set()
 
     def choose_unique_device_name(self, instance_id):
-        #TODO test this new functionality of being ablbe to attach a root volume. 
+        "Creates a unique device name for the EBS volume that is to be attached to an instance"
         choice = input("Do you want to attach a root volume? (yes/no): ")
 
         if choice == "no":
@@ -214,11 +224,12 @@ class EBSActions:
 
             print("Error: No available device names.")
             return None
-        else: 
+        else:
             potential_device_name = "dev/xvda"
             return potential_device_name
 
     def detach_vol_utils(self, instance_id, volume_id_choice):
+        "A helper function for detaching volume from an EC2 instance"
         try:
             self.ec2_client.detach_volume(
                 InstanceId=instance_id, VolumeId=volume_id_choice
@@ -235,6 +246,7 @@ class EBSActions:
             print(f"Error: Unable to detach the volume due to - {ex}")
 
     def detach_volume(self):
+        "Detaches a Volume from an EC2 instance"
         instance_id = input("Enter the EC2 Instance ID: ").lower()
         vol_id = {"root_device": [], "non_root_device": []}
         volume_detail_list = []
@@ -273,7 +285,7 @@ class EBSActions:
                 print(volume)
 
         except Exception as ex:
-            print(f"Error: {ex}")
+            print(f"Error: Unable to detach the volume due to  {ex}")
             return
 
         print("\nSelect Volume ID to detach based on the available options above: ")
@@ -293,9 +305,7 @@ class EBSActions:
                 print("Invalid choice... please select a valid Volume ID")
 
     def modify_volume(self):
-        print(
-            "To decrease a volume size,take a snapshot and then create a volume out of the snapshot"
-        )
+        "Modifies the size of an EBS volume"
         volume_id_choice = input("Enter the volume ID: ")
         volume_size_choice = input("Enter the volume target size: ")
         response = self.ec2_client.describe_volumes(VolumeIds=[volume_id_choice])
@@ -372,10 +382,10 @@ class EBSActions:
                 print(f"Volume {volume_id_choice} deleted successfully.")
 
     def list_snapshots(self):
+        "Lists all the snapshot in a user logged in region."
         snapshot_list = []
         try:
             response = self.ec2_client.describe_snapshots(OwnerIds=["self"])
-            print(response)
             snapshots = response["Snapshots"]
 
             if snapshots:
@@ -403,6 +413,7 @@ class EBSActions:
             print(formatted_info)
 
     def take_snapshots(self):
+        "It takes snapshots of the volume provided by the user"
         volume_id_choice = input("Enter the volume ID: ")
 
         try:
@@ -418,6 +429,7 @@ class EBSActions:
             print("Error: Unable to take snapshot due to - {ex}")
 
     def create_vol_from_snapshot(self):
+        "It creates a volume from the snapshot ID provided by the user"
         snapshot_id = input("Enter the snapshot ID: ")
 
         # get the volume id that created the snapshot
@@ -443,6 +455,7 @@ class EBSActions:
 
 
 def manage_ebs(access_key, secret_key, region):
+    "Provides an interactive menu for managing EBS volumes"
     action = EBSActions(access_key, secret_key, region)
     while True:
         print("\nSelect EBS action")
