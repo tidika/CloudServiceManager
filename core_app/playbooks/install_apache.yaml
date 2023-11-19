@@ -3,7 +3,8 @@
   hosts: localhost
   gather_facts: False
   vars:
-    apache_group: "{{ lookup('file', '/etc/ansible/hosts') | regex_findall('\\[(.*?)\\]') | map('regex_replace', '\\[|\\]', '') | list }}"
+    # Filtering active groups without commented ones
+    apache_group: "{{ lookup('file', '/etc/ansible/hosts') | regex_findall('(?<!#\\[)(\\[.*?\\])') }}"
   tasks:
     - name: Display available groups
       debug:
@@ -21,5 +22,12 @@
           apt:
             name: apache2
             state: present
+          delegate_to: "{{ item }}"
+          with_items: "{{ groups[user_input.user_input] }}"
+
+        - name: Create index.html
+          copy:
+            content: "Hello, this is Tochukwu Idika doing some testing."
+            dest: "/var/www/html/index.html"
           delegate_to: "{{ item }}"
           with_items: "{{ groups[user_input.user_input] }}"
